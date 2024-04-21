@@ -19,14 +19,29 @@ export function AppProvider({children}){
     }
     const addCart=(id)=>{
         const pro=product.find(item=>item.id==id)
-        serCart([...cart,pro])
+        const index=cart.findIndex(item=>item.id==id)
+        if(index>=0){
+            const newCart=cart
+            newCart[index]['Sl']++
+        }
+        else{
+            serCart([...cart,{...pro,Sl:1}])
+        }
+        
         console.log(cart)
+    }
+    const removeByid=(id)=>{
+        serCart(cart.filter(item=>item.id !=id))
+    }
+    const updateSl=(id,num)=>{
+        serCart(cart.map(item=>((item.id==id)&&!(item.Sl==1 && num ==-1))?{...item,Sl:item.Sl+num}:item))
+
     }
     useEffect(()=>{
         getData()
     },[])
     return(
-        <AppContext.Provider value={{addCart,cart}}>
+        <AppContext.Provider value={{addCart,cart,removeByid,updateSl}}>
             {children}
         </AppContext.Provider>
     )
